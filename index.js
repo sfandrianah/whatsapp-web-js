@@ -10,6 +10,8 @@ const Utils = require('./config/utils');
 const WhatsAppClient = require('./config/wa_client');
 const routes = require("./routes");
 var http = require('http');
+require('dotenv').config();
+
 
 
 // const client = new Client({

@@ -4,3 +4,4 @@ session_wa/*
 uploads/*
 node_modules/*
 package-lock.json
+.env
