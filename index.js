@@ -32,7 +32,7 @@ var http = require('http');
 // client.initialize();
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT ?? 3000;
 
 // Middleware untuk parsing JSON
 app.use(express.json());
