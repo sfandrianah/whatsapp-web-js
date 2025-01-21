@@ -48,7 +48,7 @@ app.get('/', (req, res) => {
 app.use("/api", routes);
 var server = http.createServer(app);
 // Menjalankan server
-server.listen(port, () => {
+server.listen(port, "0.0.0.0", () => {
     console.log(`Server berjalan di http://localhost:${port}`);
 });
 
