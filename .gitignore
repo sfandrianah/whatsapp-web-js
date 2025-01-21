@@ -1,0 +1,5 @@
+.wwebjs_auth/*
+.wwebjs_cache/*
+session_wa/*
+uploads/*
+node_modules/*

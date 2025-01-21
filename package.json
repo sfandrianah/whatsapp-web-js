@@ -1,0 +1,17 @@
+{
+  "name": "trp-whatsapp-web-service",
+  "version": "0.0.00001",
+  "private": true,
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "mysql2": "^3.12.0",
+    "qrcode": "^1.5.4",
+    "qrcode-terminal": "^0.12.0",
+    "sequelize": "^6.37.5",
+    "trp-whatsapp-web-service": "file:",
+    "whatsapp-web.js": "^1.26.0"
+  }
+}
