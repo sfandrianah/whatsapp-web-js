@@ -1,5 +1,6 @@
 // const { Client, LocalAuth } = require('whatsapp-web.js');
 // const qrcode = require('qrcode-terminal');
+require('dotenv').config();
 const fs = require('fs');
 const QRCode = require('qrcode');
 const sequelize = require('./config/database');
@@ -10,7 +11,7 @@ const Utils = require('./config/utils');
 const WhatsAppClient = require('./config/wa_client');
 const routes = require("./routes");
 var http = require('http');
-require('dotenv').config();
+
 
 
 
