@@ -48,6 +48,7 @@ app.get('/', (req, res) => {
 
 app.use("/api", routes);
 var server = http.createServer(app);
+server.setTimeout(30000);
 // Menjalankan server
 server.listen(port, "0.0.0.0", () => {
     console.log(`Server berjalan di http://localhost:${port}`);
