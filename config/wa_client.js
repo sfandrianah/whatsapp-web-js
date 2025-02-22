@@ -36,6 +36,16 @@ const WhatsAppClient = async (token, number, options = {}) => {
     const deviceReady = device.ready ?? 0;
     const isDeviceReady = deviceReady == 1 ? true : false;
     var deviceSessValue = device.sess_value ?? null;
+    if(device.updatedAt != null){
+        const deviceUpdateAt = device.updatedAt;
+        // console.log(deviceUpdateAt);
+        deviceUpdateAt.setMinutes(deviceUpdateAt.getMinutes() + 1); 
+        const deviceAddUpdatedAt = new Date(deviceUpdateAt); 
+        var now = new Date();
+        if(now > deviceAddUpdatedAt){
+            deviceSessValue = null;
+        } 
+    }
     if (deviceSessValue == null) {
         var updateSessValue = {
             sess_value: clientId,
