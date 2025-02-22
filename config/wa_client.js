@@ -108,9 +108,22 @@ const WhatsAppClient = async (token, number, options = {}) => {
             }
         }
     }
+    
     if (refreshQrCode != null) {
         try {
-
+            if (resultGlob) {
+                if(device.updatedAt != null){
+                    const deviceUpdateAt = device.updatedAt;
+                    // console.log(deviceUpdateAt);
+                    deviceUpdateAt.setMinutes(deviceUpdateAt.getMinutes() + 1); 
+                    const deviceAddUpdatedAt = new Date(deviceUpdateAt); 
+                    var now = new Date();
+                    if(now > deviceAddUpdatedAt){
+                        resultGlob = false;
+                        // console.log("LEBIH");
+                    } 
+                }
+            }
             var qrcode = null;
             if (refreshQrCode) {
                 if (resultGlob) {
