@@ -28,7 +28,7 @@ const WhatsAppClient = async (token, number, options = {}) => {
     var refreshQrCode = options.refreshQrCode ?? null;
     var isDisconnected = options.disconnected ?? null;
     var clientId = Utils.makeid(12);
-    var dataPath = __dirname + '/../session_wa/' + number;
+    var dataPath = __dirname + '/../session_wa/' + oauthTokenId + '-' + number;
 
     // console.log(device);
     const deviceId = device.id ?? null;
@@ -47,7 +47,7 @@ const WhatsAppClient = async (token, number, options = {}) => {
     } else {
         clientId = deviceSessValue;
     }
-    var dataPathSession = dataPath + '/session-' + clientId;
+    // var dataPathSession = dataPath + '/session-' + oauthTokenId + '-' + clientId;
 
     // console.log(device);
     // console.log(clientId);
