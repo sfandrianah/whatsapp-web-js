@@ -36,15 +36,17 @@ const WhatsAppClient = async (token, number, options = {}) => {
     const deviceReady = device.ready ?? 0;
     const isDeviceReady = deviceReady == 1 ? true : false;
     var deviceSessValue = device.sess_value ?? null;
-    if(device.updatedAt != null){
-        const deviceUpdateAt = device.updatedAt;
-        // console.log(deviceUpdateAt);
-        deviceUpdateAt.setMinutes(deviceUpdateAt.getMinutes() + 1); 
-        const deviceAddUpdatedAt = new Date(deviceUpdateAt); 
-        var now = new Date();
-        if(now > deviceAddUpdatedAt){
-            deviceSessValue = null;
-        } 
+    if (refreshQrCode != null) {
+        if (device.updatedAt != null) {
+            const deviceUpdateAt = device.updatedAt;
+            // console.log(deviceUpdateAt);
+            deviceUpdateAt.setMinutes(deviceUpdateAt.getMinutes() + 1);
+            const deviceAddUpdatedAt = new Date(deviceUpdateAt);
+            var now = new Date();
+            if (now > deviceAddUpdatedAt) {
+                deviceSessValue = null;
+            }
+        }
     }
     if (deviceSessValue == null) {
         var updateSessValue = {
@@ -118,20 +120,20 @@ const WhatsAppClient = async (token, number, options = {}) => {
             }
         }
     }
-    
+
     if (refreshQrCode != null) {
         try {
             if (resultGlob) {
-                if(device.updatedAt != null){
+                if (device.updatedAt != null) {
                     const deviceUpdateAt = device.updatedAt;
                     // console.log(deviceUpdateAt);
-                    deviceUpdateAt.setMinutes(deviceUpdateAt.getMinutes() + 1); 
-                    const deviceAddUpdatedAt = new Date(deviceUpdateAt); 
+                    deviceUpdateAt.setMinutes(deviceUpdateAt.getMinutes() + 1);
+                    const deviceAddUpdatedAt = new Date(deviceUpdateAt);
                     var now = new Date();
-                    if(now > deviceAddUpdatedAt){
+                    if (now > deviceAddUpdatedAt) {
                         resultGlob = false;
                         // console.log("LEBIH");
-                    } 
+                    }
                 }
             }
             var qrcode = null;
@@ -358,7 +360,7 @@ const WhatsAppClient = async (token, number, options = {}) => {
 
                     return new Promise((resolve, reject) => {
                         let myVar = setInterval(async function () {
-                            console.log(`nextNumber ${nextNumber}`);
+                            console.log(`nextNumber Ready ${nextNumber}`);
                             if (resultReady) {
                                 nextNumber = 1;
                                 clearInterval(myVar);
