@@ -8,6 +8,8 @@ const path = require('path');
 const { MessageMedia } = require('whatsapp-web.js');
 const HistorySendMessages = require('../models/history_send_messages');
 const OauthToken = require('../models/oauth_token');
+const cron = require('node-cron');
+
 
 
 router.get('/:device_number/qr', async (req, res) => {
@@ -18,7 +20,7 @@ router.get('/:device_number/qr', async (req, res) => {
     const deviceNumber = param.device_number ?? null;
     // const deviceNumber = query.device_number ?? null;
     var waClient = await WhatsAppClient(xTrpToken, deviceNumber, { refreshQrCode: true });
-    console.log(waClient);
+    // console.log(waClient);
     if (!waClient.result) {
         return res.status(404).send({
             result: waClient.result,
@@ -32,53 +34,6 @@ router.get('/:device_number/qr', async (req, res) => {
         value: waClient.qrcode ?? null,
         base64: qrCodeImage,
     });
-    // const device = await Devices.findOne({ where: { oauth_token_id: oauthTokenId, value: number } });
-    // console.log(waClient);
-    // const client = waClient.init;
-    // var qrcode = null;
-    // client.on('qr', async (qr) => {
-    //     qrcode = qr;
-    // });
-    // client.initialize();
-    // var nextNumber = 1;
-    // let myVar = setInterval(function () {
-    //     // console.log(`nextNumber ${nextNumber}`);
-    //     if (qrcode != null) {
-    //         clearInterval(myVar);
-    //         nextNumber = 1;
-    //         // console.log(`DEVICE ID = ${waClient.deviceId}`);
-    //         Devices.update(
-    //             { qrcode: qrcode },
-    //             { where: { id: waClient.deviceId } }
-    //         )
-
-    //         res.send({
-    //             result: true,
-    //             message: "success",
-    //             value: qrcode,
-    //         });
-    //     } else {
-    //         nextNumber++;
-    //     }
-    //     if (nextNumber >= 30) {
-    //         nextNumber = 1;
-    //         clearInterval(myVar);
-    //         res.send({
-    //             result: false,
-    //             message: "Get QR Failed",
-    //             value: null,
-    //         });
-    //     }
-    // }, 1000);
-
-    // client.on('ready', () => {
-    //     console.log('Client is ready!');
-    // });
-
-    // client.on('message', (message) => {
-    //     console.log(message.body);
-    // });
-
 });
 
 router.get('/:device_number/qr-image', async (req, res) => {
@@ -171,8 +126,14 @@ router.get('/:device_number', async (req, res) => {
             message: waClient.message
         });
     }
+    var deviceId = waClient.deviceId;
     delete waClient.init;
     waClient.message = "Device Connected";
+    // Devices.update(
+    //     { qrcode: qrcode },
+    //     { where: { id: deviceId } }
+    // )
+
     // console.log(waClient);
     return res.send(waClient);
     // const client = waClient.init;
@@ -183,6 +144,7 @@ router.get('/:device_number', async (req, res) => {
     // client.initialize();
 });
 
+var activityDataSendMessage = [];
 
 router.post('/:device_number/send', async (req, res) => {
     var param = req.params;
@@ -194,9 +156,20 @@ router.post('/:device_number/send', async (req, res) => {
     const message = body.message;
     console.log(body);
 
+    // activityDataSendMessage.push({
+
+    // });
+
     const xTrpToken = header["x-trp-token"] ?? null;
     const deviceNumber = param.device_number ?? null;
-    var waClient = await WhatsAppClient(xTrpToken, deviceNumber, { withReady: true });
+    var waClient = await WhatsAppClient(xTrpToken, deviceNumber, {
+        withReady: true
+        , message: {
+            content: message, 
+            to: phoneNumber, 
+            image: phoneNumber
+        }
+    });
     if (!waClient.result) {
         return res.status(404).send({
             result: waClient.result,
@@ -213,6 +186,17 @@ router.post('/:device_number/send', async (req, res) => {
     console.log(waClient);
     if (waClient.ready) {
         const chatId = phoneNumber + "@c.us";
+        console.log(`PENGIRIMAN PESAN KE ${chatId} dengan message = ${message}`)
+        console.log(client.isReady);
+        // client.on('ready', () => {
+        //     console.log('Client is ready!');
+        //     // Now you can send a message
+        //     client.sendMessage(chatId, 'Hello from WhatsApp!');
+        // });
+        // res.send({
+        //     result: false,
+        //     message: "GAGAL",
+        // });
         if (image == null) {
             console.log("PENGIRIMAN TEXT");
             client.sendMessage(chatId, message).then(function (e) {
@@ -222,7 +206,7 @@ router.post('/:device_number/send', async (req, res) => {
                     message: "Send Message Success",
                 });
             }).catch(function (e) {
-                // console.log(e);
+                console.log(e);
                 historySendMessageData.err_messages = e.toString();
                 HistorySendMessages.create(historySendMessageData)
                 res.send({
@@ -237,7 +221,7 @@ router.post('/:device_number/send', async (req, res) => {
             const media = await MessageMedia.fromUrl(image);
             historySendMessageData.image_type = "URL";
             historySendMessageData.image_value = image;
-
+            console.log(media);
             client.sendMessage(chatId, media, { caption: message }).then(function (e) {
                 HistorySendMessages.create(historySendMessageData)
                 res.send({
@@ -245,7 +229,7 @@ router.post('/:device_number/send', async (req, res) => {
                     message: "Send Message Success",
                 });
             }).catch(function (e) {
-                // console.log(e);
+                console.log(e);
                 historySendMessageData.err_messages = e.toString();
                 HistorySendMessages.create(historySendMessageData)
                 res.send({
@@ -254,7 +238,6 @@ router.post('/:device_number/send', async (req, res) => {
                 });
             });
         }
-
     } else {
         historySendMessageData.err_messages = "Device Not Connected";
         HistorySendMessages.create(historySendMessageData)
@@ -356,5 +339,45 @@ router.delete('/:device_number', async (req, res) => {
     await Devices.destroy({ where: { id: waClient.deviceId } });
     return res.send(waClient);
 });
+
+// const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+// var isTestCron = false;
+// var indexCron = 1;
+// router.get('/cron/test', (req, res) => {
+//     res.send('Hello, CHECK CRON.');
+//     isTestCron = true;
+// });
+// cron.schedule('* * * * *', async ()  => {
+//     await delay(10000);
+//     console.log(`IS CRON 1 = ${isTestCron}`)
+
+//     isTestCron = false;
+// });
+
+// cron.schedule('* * * * *', async ()  => {
+//     await delay(20000);
+//     console.log(`IS CRON 2 = ${isTestCron}`)
+
+//     isTestCron = false;
+// });
+// cron.schedule('* * * * *', async ()  => {
+//     await delay(30000);
+//     console.log(`IS CRON 3 = ${isTestCron}`)
+
+//     isTestCron = false;
+// });
+// cron.schedule('* * * * *', async ()  => {
+//     await delay(40000);
+//     console.log(`IS CRON 4 = ${isTestCron}`)
+
+//     isTestCron = false;
+// });
+// cron.schedule('* * * * *', async ()  => {
+//     await delay(50000);
+//     console.log(`IS CRON 5 = ${isTestCron}`)
+
+//     isTestCron = false;
+// });
 
 module.exports = router;

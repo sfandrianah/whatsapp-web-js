@@ -22,6 +22,10 @@ const Devices = sequelize.define('Devices', {
         type: DataTypes.NUMBER,
         allowNull: true
     },
+    qr_created_on: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
     createdAt: {
         field: "created_at",
         allowNull: true,
