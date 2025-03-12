@@ -3,7 +3,8 @@
   "version": "0.0.00001",
   "private": true,
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "build": "react-scripts build"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
