@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
-  publish = "dist" # untuk Vite/Svelte
+  #command = "npm run build"
+  #publish = "dist" # untuk Vite/Svelte
   # atau "build" jika menggunakan Create React App
   functions = "functions"
